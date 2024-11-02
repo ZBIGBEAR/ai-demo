@@ -1,6 +1,13 @@
-version: '3'
+version: '3.8'
+
 services:
-  my_service:
-    image: demo-1102
+  myapp:
+    build:
+      context: .  # 指定 Dockerfile 的上下文目录
+      dockerfile: Dockerfile  # 指定 Dockerfile 名称（可选，如果文件名为 Dockerfile，可以省略）
+    ports:
+      - "8080:8090"  # 将主机的 8080 端口映射到容器的 80 端口
     volumes:
-      - /Users/liyuping/Workspace/go/src/demo:/app
+      - .:/app  # 可选，将当前目录挂载到容器中
+    environment:
+      - ENV_VAR=value  # 可选，设置环境变量
