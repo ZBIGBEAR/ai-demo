@@ -1,0 +1,6 @@
+version: '3'
+services:
+  my_service:
+    image: demo-1102
+    volumes:
+      - /Users/liyuping/Workspace/go/src/demo:/app
