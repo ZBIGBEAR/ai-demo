@@ -23,19 +23,24 @@ func main() {
 	router.Use(cors.New(corsConfig))
 
 	// 路由定义
-	router.GET("/hello", hello)
+	router.POST("/ai-chat", aiChat)
+	//router.POST("/hello", hello)
 
 	// 启动服务
 	router.Run(":8080") // 默认在 8080 端口
 }
 
-func hello(c *gin.Context) {
+func aiChat(c *gin.Context) {
 	url := c.Query("url")
-	knowledge := c.Query("knowledge")
-	history := c.Query("history")
-	question := c.Query("question")
+	var requestBody RequestBody
+	if err := c.ShouldBindJSON(&requestBody); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	fmt.Printf("url:%s\n", url)
-	fmt.Printf("question:%s\n", question)
+	fmt.Printf("knowledge:%v\n", requestBody.Knowledge)
+	fmt.Printf("history:%v\n", requestBody.History)
+	fmt.Printf("question:%v\n", requestBody.Question)
 
 	//cmd := exec.Command("python3", "/Users/liyuping/Workspace/python/first-smith/test15.py", url)
 	//	knowledge := `不要太看重眼前利益，多争取与一些聪明的人合作，特别是非技术领域的人。
@@ -170,7 +175,7 @@ func hello(c *gin.Context) {
 	//
 	//很多互联网从业人士，多有个产品梦，梦想做一款改变世界的产品，但却没意识到，你自己是这一生最好的产品，自己的成长才是这辈子回报最大，复利最高的一笔投资，投资自己，才是真正的价值投资！
 	//`
-	cmd := exec.Command("python3", "./script/ask.py", knowledge, history, question)
+	cmd := exec.Command("python3", "./script/ask.py", requestBody.Knowledge, requestBody.History, requestBody.Question)
 	// 获取脚本输出
 	output, err := cmd.Output()
 	if err != nil {
@@ -192,4 +197,10 @@ func newHelloResp(msg string) *helloRsp {
 type helloRsp struct {
 	Code string `json:"code"`
 	Msg  string `json:"msg"`
+}
+
+type RequestBody struct {
+	Knowledge string `json:"knowledge" binding:"required"`
+	History   string `json:"history" binding:"required"`
+	Question  string `json:"question" binding:"required"`
 }

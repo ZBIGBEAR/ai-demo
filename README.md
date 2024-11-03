@@ -13,5 +13,5 @@ docker run -itd -p 8080:8080 ai.1.0
 docker-compose up -d
 
 # 停止
-docker-compse down
+docker-compose down
 ```
