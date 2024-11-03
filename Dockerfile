@@ -1,5 +1,6 @@
 # 使用官方的 Python 3.12 基础镜像
-FROM python:3.12-slim
+#FROM python:3.12-slim
+FROM --platform=linux/amd64 python:3.12-slim
 
 # 设置工作目录
 WORKDIR /app
@@ -9,7 +10,8 @@ COPY . .
 
 # 安装 Python 依赖
 # COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
+# RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install -r requirements.txt
 # 确保 Langchain 被安装
 # RUN pip install langchain
 
@@ -60,8 +62,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 #    tar -C /usr/local -xzf go1.22.1.linux-arm64.tar.gz && \
 #    rm go1.22.1.linux-arm64.tar.gz
 
-RUN tar -C /usr/local -xzf go1.22.1.linux-arm64.tar.gz && \
-    rm go1.22.1.linux-arm64.tar.gz
+RUN tar -C /usr/local -xzf go1.22.1.linux-amd64.tar.gz
 
 # 设置 Go 环境变量
 ENV GOPATH=/go
@@ -76,7 +77,7 @@ ENV PATH $PATH:$GOPATH/bin:/usr/local/go/bin
 #COPY main.go .
 
 # 编译 Go 程序
-RUN go build -o main main.go
+# RUN go build -o main main.go
 
 # 假设你有一个方式将 Go 程序与 PM2 集成（例如，通过一个 Node.js 脚本来启动 Go 程序）
 # 创建一个示例的 Node.js 脚本来启动 Go 程序（这是一个假设的例子）
@@ -87,4 +88,4 @@ EXPOSE 8080
 #CMD ["pm2-runtime", "start", "socket.json"]
 
 # 如果你不需要 PM2，只需运行编译后的 Go 程序
-CMD ["./main"]
+CMD ["go run main.go"]
